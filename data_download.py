@@ -36,3 +36,20 @@ def calculate_and_display_average_price(data):
     '''
     result = data['Close'].mean()
     print('Среднее значение цены за период', result)
+
+
+def notify_if_strong_fluctuations(data, threshold):
+    '''
+    Функция будет вычислять максимальное и минимальное значения цены закрытия и сравнивать разницу
+    с заданным порогом. Если разница превышает порог, пользователь получает уведомление.
+    :param data: DataFrame
+    :param threshold: порог колебаний в % за период
+    :return: уведомление при выполнении условия
+    '''
+    max_price = data['Close'].max()
+    min_price = data['Close'].min()
+    price_fluctuation = (max_price - min_price) / min_price * 100
+    if price_fluctuation > threshold:
+        notification = (f'Колебание цены акций превысило заданные {threshold} % за период и составило '
+                        f'{price_fluctuation} %.')
+        print(notification)

@@ -25,6 +25,10 @@ def main():
     # Вычислить среднюю цену закрытия акций за заданный период
     dd.calculate_and_display_average_price(stock_data)
 
+    # Проверка порога колебания цены акций
+    threshold = float(input('Введите пороговый процент колебания цены акций за период: '))
+    dd.notify_if_strong_fluctuations(stock_data, threshold)
+
     # Добавить скользящее среднее значение к данным
     stock_data = dd.add_moving_average(stock_data)
 
