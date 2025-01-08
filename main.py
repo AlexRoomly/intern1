@@ -1,13 +1,14 @@
 import data_download as dd
 import data_plotting as dplt
+import additional_functionality as adf
 
 
 def main():
-    '''
+    """
     Основная функция, управляющая процессом загрузки, обработки данных и их визуализации.
     Запрашивает у пользователя ввод данных, вызывает функции загрузки и обработки данных,
     а затем передаёт результаты на визуализацию.
-    '''
+    """
     print("Добро пожаловать в инструмент получения и построения графиков биржевых данных.")
     print("Вот несколько примеров биржевых тикеров, которые вы можете рассмотреть: AAPL (Apple Inc),"
           " GOOGL (Alphabet Inc), MSFT (Microsoft Corporation), AMZN (Amazon.com Inc), TSLA (Tesla Inc).")
@@ -28,6 +29,12 @@ def main():
     # Проверка порога колебания цены акций
     threshold = float(input('Введите пороговый процент колебания цены акций за период: '))
     dd.notify_if_strong_fluctuations(stock_data, threshold)
+
+    # Возможность экспортировать данные в CSV формате
+    req = input("Если хотите сохранить данные в CSV файл, введите 'y': ")
+    if req == 'y':
+        req_filename = input("Введите имя файла, с расширением '.csv': ")
+        adf.export_data_to_csv(stock_data, req_filename)
 
     # Добавить скользящее среднее значение к данным
     stock_data = dd.add_moving_average(stock_data)
