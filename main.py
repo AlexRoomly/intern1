@@ -23,6 +23,12 @@ def main():
     # Получить данные
     stock_data = dd.fetch_stock_data(ticker, period)
 
+    # Добавление дополнительных технических индикаторов MACD.
+    req_macd = None
+    req_macd = input("Рассчитать дополнительные технические индикаторы MACD, введите 'y': ")
+    if req_macd=='y':
+        stock_data = dd.get_macd(ticker, period)
+
     # Вычислить среднюю цену закрытия акций за заданный период
     dd.calculate_and_display_average_price(stock_data)
 
@@ -40,7 +46,10 @@ def main():
     stock_data = dd.add_moving_average(stock_data)
 
     # Создать график
-    dplt.create_and_save_plot(stock_data, ticker, period)
+    if req_macd:
+        dplt.create_and_save_plot_macd(stock_data, ticker, period)
+    else:
+        dplt.create_and_save_plot(stock_data, ticker, period)
 
 
 if __name__ == "__main__":

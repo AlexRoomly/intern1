@@ -1,3 +1,4 @@
+from datetime import timedelta
 import pandas as pd
 import yfinance as yf
 
@@ -53,3 +54,56 @@ def notify_if_strong_fluctuations(data, threshold):
         notification = (f'Колебание цены акций превысило заданные {threshold} % за период и составило '
                         f'{price_fluctuation} %.')
         print(notification)
+
+
+def get_macd(ticker, period):
+    """
+    Расчёт дополнительных технических индикаторов MACD.
+    :param ticker: Название тикета, может принимать значения ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA']
+    :param period: Период предоставления данных:
+                   ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
+    :return: DataFrame c рассчитанными параметрами MACD
+    """
+
+    def data_macd_func(stock1, data_start1, data_end1, data_len1):
+        """
+        Выбирает необходимое количество строк с данными в DataFrame для расчета MACD
+        :param stock1: информация об акциях
+        :param data_start1: начало периода
+        :param data_end1: конец периода
+        :param data_len1: длина DataFrame
+        :return: DataFrame c необходимым количеством строк
+        """
+        data_start_m = data_start1 - timedelta(days=33)
+        data_m = stock1.history(start=data_start_m, end=data_end1)
+        len_data_m = len(data_m.index)
+        while (len_data_m - data_len1) < 33:
+            data_start_m -= timedelta(days=1)
+            data_m = stock1.history(start=data_start_m, end=data_end1)
+            len_data_m = len(data_m.index)
+        return data_m
+
+    stock = yf.Ticker(ticker)
+    data = stock.history(period=period)
+    cols = ['EMA_of_12', 'EMA_of_26', 'MACD_Main', 'MACD_Signal']
+    data_len = len(data.index)
+    data_start = data.index[0]
+    data_end = data.index[data_len - 1] + timedelta(days=1)
+    data_macd = data_macd_func(stock, data_start, data_end, data_len)
+    data_macd = data_macd.reindex(columns=data_macd.columns.tolist() + cols)
+    data_len = len(data_macd.index)
+    for i in range(data_len - 11):
+        mean_value = data_macd['Close'].iloc[i:i + 11].mean()
+        data_mean = data_macd.index[i + 11]
+        data_macd.loc[data_mean, 'EMA_of_12'] = mean_value
+        if i < (data_len - 25):
+            mean_value_26 = data_macd['Close'].iloc[i:i + 25].mean()
+            data_mean_26 = data_macd.index[i + 25]
+            data_macd.loc[data_mean_26, 'EMA_of_26'] = mean_value_26
+    data_macd['MACD_Main'] = data_macd['EMA_of_12'] - data_macd['EMA_of_26']
+    for i in range(25, data_len - 8):
+        mean_value_m = data_macd['MACD_Main'].iloc[i:i + 8].mean()
+        data_mean_m = data_macd.index[i + 8]
+        data_macd.loc[data_mean_m, 'MACD_Signal'] = mean_value_m
+    data_m1 = data_macd.iloc[33:]
+    return data_m1
