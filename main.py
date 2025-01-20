@@ -1,3 +1,4 @@
+from datetime import datetime
 import data_download as dd
 import data_plotting as dplt
 import additional_functionality as adf
@@ -18,16 +19,25 @@ def main():
     # ticker = 'AAPL'
     ticker = input("Введите тикер акции (например, «AAPL» для Apple Inc):»")
     # period = '3mo'
-    period = input("Введите период для данных (например, '1mo' для одного месяца): ")
+    period = input("Введите период для данных (например, '1mo' для одного месяца), если нужны данные за конкретный "
+                   "период дат введите '0': ")
+    if period == '0':
+        start_date = datetime.strptime(input("Введите дату начала периода в формате YYYY-MM-DD (год-месяц-день, "
+                                             "например 2024-01-31): "), '%Y-%m-%d')
+        end_date = datetime.strptime(input("Введите дату окончания периода в формате YYYY-MM-DD (год-месяц-день, "
+                                           "например 2024-02-28): "), '%Y-%m-%d')
+    else:
+        start_date = None
+        end_date = None
 
     # Получить данные
-    stock_data = dd.fetch_stock_data(ticker, period)
+    stock_data = dd.fetch_stock_data(ticker, period, start_date, end_date)
 
     # Добавление дополнительных технических индикаторов MACD.
     req_macd = None
     req_macd = input("Рассчитать дополнительные технические индикаторы MACD, введите 'y': ")
-    if req_macd=='y':
-        stock_data = dd.get_macd(ticker, period)
+    if req_macd == 'y':
+        stock_data = dd.get_macd(ticker, period, start_date, end_date)
 
     # Вычислить среднюю цену закрытия акций за заданный период
     dd.calculate_and_display_average_price(stock_data)

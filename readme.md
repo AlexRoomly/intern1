@@ -75,3 +75,9 @@
 <p align="center">
 <img src="Picture/img7.png" width="80%">
 </p>
+
+9. Программа позволяет вводить произвольный период времени для формирования данных.
+
+<p align="center">
+<img src="Picture/img8.png" width="80%">
+</p>

@@ -3,17 +3,22 @@ import pandas as pd
 import yfinance as yf
 
 
-def fetch_stock_data(ticker, period='1mo'):
-    '''
-    Получает исторические данные об акциях для указанного тикера и временного периода.
+def fetch_stock_data(ticker, period='1mo', start_date=None, end_date=None):
+    """
+    олучает исторические данные об акциях для указанного тикера и временного периода.
     Возвращает DataFrame с данными.
     :param ticker: Название тикета, может принимать значения ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA']
     :param period: Период предоставления данных:
                    ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
+    :param start_date: дата начала периода
+    :param end_date: дата окончания периода
     :return: DataFrame с данными
-    '''
+    """
     stock = yf.Ticker(ticker)
-    data = stock.history(period=period)
+    if period != '0':
+        data = stock.history(period=period)
+    else:
+        data = stock.history(start=start_date, end=end_date)
     return data
 
 
@@ -56,7 +61,7 @@ def notify_if_strong_fluctuations(data, threshold):
         print(notification)
 
 
-def get_macd(ticker, period):
+def get_macd(ticker, period, start_date=None, end_date=None):
     """
     Расчёт дополнительных технических индикаторов MACD.
     :param ticker: Название тикета, может принимать значения ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA']
@@ -83,8 +88,13 @@ def get_macd(ticker, period):
             len_data_m = len(data_m.index)
         return data_m
 
+
+
     stock = yf.Ticker(ticker)
-    data = stock.history(period=period)
+    if period != '0':
+        data = stock.history(period=period)
+    else:
+        data = stock.history(start=start_date, end=end_date)
     cols = ['EMA_of_12', 'EMA_of_26', 'MACD_Main', 'MACD_Signal']
     data_len = len(data.index)
     data_start = data.index[0]

@@ -13,5 +13,5 @@ def export_data_to_csv(data, filename):
     :param filename: имя файла
     :return: Сообщение о сохранении данных в файл
     """
-    data.to_csv(filename, index=False)
+    data.to_csv(filename, index=True)
     print(f"Данные сохранены в {filename}.")
