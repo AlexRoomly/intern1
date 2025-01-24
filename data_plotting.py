@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def create_and_save_plot(data, ticker, period, filename=None):
+def create_and_save_plot(data, ticker, period, style_user, filename=None):
     '''
     Создаёт график, отображающий цены закрытия и скользящие средние.
     Предоставляет возможность сохранения графика в файл. Параметр filename опционален;
@@ -13,9 +13,12 @@ def create_and_save_plot(data, ticker, period, filename=None):
                    ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
     :param filename: Имя файла для сохранения изображения с графиком, по умолчанию имя файла будет
                      формироваться автоматически
+    :param style_user: Стиль оформления графика.
     :return: Сообщение о сохранении графика в файл
     '''
+
     plt.figure(figsize=(10, 6))
+    plt.style.use(style_user)
 
     if 'Date' not in data:
         if pd.api.types.is_datetime64_any_dtype(data.index):
@@ -42,7 +45,7 @@ def create_and_save_plot(data, ticker, period, filename=None):
     plt.savefig(filename)
     print(f"График сохранен как {filename}")
 
-def create_and_save_plot_macd(data, ticker, period, filename=None):
+def create_and_save_plot_macd(data, ticker, period, style_user, filename=None):
     '''
     Создаёт график, отображающий цены закрытия и скользящие средние, дополнительные технические индикаторы MACD.
     Предоставляет возможность сохранения графика в файл. Параметр filename опционален;
@@ -53,9 +56,12 @@ def create_and_save_plot_macd(data, ticker, period, filename=None):
                    ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
     :param filename: Имя файла для сохранения изображения с графиком, по умолчанию имя файла будет
                      формироваться автоматически
+    :param style_user: Стиль оформления графика.
     :return: Сообщение о сохранении графика в файл
     '''
+
     plt.figure(figsize=(10, 6))
+    plt.style.use(style_user)
 
     if 'Date' not in data:
         if pd.api.types.is_datetime64_any_dtype(data.index):

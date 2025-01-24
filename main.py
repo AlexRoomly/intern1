@@ -2,6 +2,7 @@ from datetime import datetime
 import data_download as dd
 import data_plotting as dplt
 import additional_functionality as adf
+import matplotlib.pyplot as plt
 
 
 def main():
@@ -55,11 +56,20 @@ def main():
     # Добавить скользящее среднее значение к данным
     stock_data = dd.add_moving_average(stock_data)
 
+    # Возможность выбрать стиль оформления графика
+    style_all = plt.style.available
+    print('Доступные для оформления графика стили: ')
+    number_style = 0
+    for style in style_all:
+        print(f'{style} - номер стиля {number_style}')
+        number_style += 1
+    style_user = style_all[int(input('Выберите необходимый Вам стиль для оформления графика, введите его номер: '))]
+
     # Создать график
-    if req_macd:
-        dplt.create_and_save_plot_macd(stock_data, ticker, period)
+    if req_macd == 'y':
+        dplt.create_and_save_plot_macd(stock_data, ticker, period, style_user)
     else:
-        dplt.create_and_save_plot(stock_data, ticker, period)
+        dplt.create_and_save_plot(stock_data, ticker, period, style_user)
 
 
 if __name__ == "__main__":
